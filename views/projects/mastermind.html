@@ -1,0 +1,25 @@
+<template name="mastermind">
+<center>
+  <table>
+  {{#each guesses}}
+    {{> guess}}
+  {{/each}}
+  </table>
+</center>
+</template>
+
+
+<template name="guess">
+  <tr>
+    {{#each pegs}}
+      <td>
+        <svg width="50" height="50">
+          <rect width="50" height="50" fill="{{color}}" />
+        </svg>
+      </td>
+    {{/each}}
+    <td>
+      {{bulls}} Bulls <br/> {{cows}} Cows
+    </td>
+  </tr>
+</template>
