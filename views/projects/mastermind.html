@@ -24,6 +24,21 @@
     </div>
   {{/each}}
 </center>
+<div class="col-md-4 col-sm-3">
+  {{#if isSolved}}
+    <button class="btn btn-default btn-lg" type="button" id="new-game">
+      New Game
+    </button>
+  {{else}}
+    <nav>
+      <ul class="pagination pagination-lg">
+        <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+        <li id="submit"><a href="#">submit</a></li>
+        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+      </ul>
+    </nav>
+  {{/if}}
+</div>
 </template>
 
 

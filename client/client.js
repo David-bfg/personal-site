@@ -15,10 +15,7 @@ Session.set("mastermindGuess", ["red", "red", "red", "red"]);
 Template.navbar.events({
   "click .brand": function (event) {
     $(".navbar-section").removeClass("active");
-  }
-});
-
-Template.navbar.events({
+  },
   "click .navbar-section": function (event) {
     $(".navbar-section").removeClass("active");
     $(event.currentTarget).addClass("active");
@@ -55,15 +52,23 @@ Template.selectproject.events({
 });
 
 Template.selectproject.helpers({
-  mastermindThumbnail: [
-        {pegs:[{color: "yellow", x: 0, y: 0}, {color: "green", x: 50, y: 0},
-          {color: "red", x: 100, y: 0}, {color: "blue", x: 150, y: 0}]},
-        {pegs:[{color: "green", x: 0, y: 50}, {color: "yellow", x: 50, y: 50},
-          {color: "blue", x: 100, y: 50}, {color: "blue", x: 150, y: 50}]},
-        {pegs:[{color: "red", x: 0, y: 100}, {color: "blue", x: 50, y: 100},
-          {color: "red", x: 100, y: 100}, {color: "yellow", x: 150, y: 100}]},
-        {pegs:[{color: "green", x: 0, y: 150}, {color: "blue", x: 50, y: 150},
-          {color: "green", x: 100, y: 150}, {color: "yellow", x: 150, y: 150}]}]
+  mastermindThumbnail: function () {
+    var thumbnail = [
+      {pegs:[{color: "yellow"}, {color: "green"}, {color: "red"}, {color: "blue"}]},
+      {pegs:[{color: "green"}, {color: "yellow"}, {color: "blue"}, {color: "blue"}]},
+      {pegs:[{color: "red"}, {color: "blue"}, {color: "red"}, {color: "yellow"}]},
+      {pegs:[{color: "green"}, {color: "blue"}, {color: "green"}, {color: "yellow"}]}
+    ];
+
+    for(var y =0; y <4; y++){
+      for(var x =0; x <4; x++){
+        thumbnail[y].pegs[x].x = x * 50;
+        thumbnail[y].pegs[x].y = y * 50;
+      }
+    }
+
+    return thumbnail;
+  }
 });
 
 Template.projects.helpers({
@@ -79,19 +84,21 @@ Template.projects.helpers({
   }
 });
 
+var colors = [
+  "red", "green", "orange", "magenta", "blue", "yellow", "brown", "purple"
+];
+
 Template.mastermind.helpers({
   guesses: function () {
     return MastermindGuesses.find({});
-  }
-});
-
-Template.mastermind.helpers({
+  },
+  isSolved: function () {
+    return MastermindGuesses.find({bulls: 4}).count();
+  },
   mastermindColors: [
-      {color: "red"}, {color: "green"}, {color: "orange"}, {color: "magenta"},
-      {color: "blue"}, {color: "yellow"}, {color: "brown"}, {color: "purple"}]
-});
-
-Template.mastermind.helpers({
+    {color: colors[0]}, {color: colors[1]}, {color: colors[2]}, {color: colors[3]},
+    {color: colors[4]}, {color: colors[5]}, {color: colors[6]}, {color: colors[7]}
+  ],
   mastermindCurrentGuess: function () {
     var guess = Session.get("mastermindGuess");
     return[
@@ -100,9 +107,58 @@ Template.mastermind.helpers({
   }
 });
 
-Template.navbar.events({
-  "click .navbar-section": function (event) {
-    $(".navbar-section").removeClass("active");
-    $(event.currentTarget).addClass("active");
+var bulls = function (guess, solution) {
+  var bulls = 0;
+  for(var x = 0; x < 4; x++){
+    if(guess[x] == solution[x]){bulls++;}
+  }
+  return bulls;
+};
+
+var bullsPlusCows = function (guess, solution) {
+  var bullsPlusCows = 0;
+  for(var x = 0; x < 4; x++){
+    var index = solution.indexOf(guess[x]);
+    if(-1 != index){
+      bullsPlusCows++;
+      solution.splice(index, 1);
+    }
+  }
+  return bullsPlusCows;
+};
+
+Template.mastermind.events({
+  "click .dropdown-menu li": function (event) {
+    var $target = $(event.currentTarget);
+    var id = $target.closest(".dropdown-menu").attr("aria-labelledby");
+    var guess = Session.get("mastermindGuess");
+
+    id = id.substr(id.length - 1);
+    guess[id] = $target.attr("value");
+    Session.set("mastermindGuess", guess);
+  },
+  "click #submit": function (event) {
+    var guess = Session.get("mastermindGuess");
+    var dbGuess = {pegs:[{},{},{},{}]};
+
+    for(var x = 0; x < 4; x++){
+      dbGuess.pegs[x].color = guess[x];
+    }
+
+    var solution = MastermindSolution.find({}).fetch()[0].solution;
+
+    dbGuess.bulls = bulls(guess, solution);
+    dbGuess.cows = bullsPlusCows(guess, solution) - dbGuess.bulls;
+    MastermindGuesses.insert(dbGuess);
+  },
+  "click #new-game": function (event) {
+    Meteor.call("clearMastermind");
+    var id = MastermindSolution.find({}).fetch()[0]._id;
+    var solution = [];
+
+    for(var x = 0; x < 4; x++){
+      solution.push(colors[Math.floor(Math.random() * colors.length)]);
+    }
+    MastermindSolution.update({_id: id}, {solution: solution});
   }
 });
