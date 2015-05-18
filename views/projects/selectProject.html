@@ -25,16 +25,25 @@
     </a>
   </div>
   <div>
-    <a class="thumbnail">
+    <a class="thumbnail" id="mastermind">
       <center>
         <svg width="200" height="200">
-          <rect width="200" height="200" stroke="blue" stroke-width="4" fill="grey" />
+
+          {{#each mastermindThumbnail}}
+            {{#each pegs}}
+              <rect width="50" height="50" x="{{x}}" y="{{y}}" fill="{{color}}" />
+            {{/each}}
+          {{/each}}
           Sorry, your browser does not support inline SVG.
         </svg>
       </center>
       <div class="caption">
-        <h3>Thumbnail label</h3>
-        <p>...</p>
+        <h3>Mastermind Solver</h3>
+        <p>
+          A bit of Prolog code I did to get all the posible soulutions for
+          playing mastermind. Play and see all posible solutions instead of
+          guessing.
+        </p>
       </div>
     </a>
   </div>

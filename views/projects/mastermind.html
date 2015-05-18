@@ -5,21 +5,43 @@
     {{> guess}}
   {{/each}}
   </table>
+  {{#each mastermindCurrentGuess}}
+    <div class="dropdown col-md-2 col-sm-3">
+      <button class="btn btn-default dropdown-toggle" type="button" id="colorDropdown{{index}}" data-toggle="dropdown" aria-expanded="true">
+        {{> peg}} <span class="caret"></span>
+      </button>
+      <!-- <select class="selectpicker btn btn-default"> -->
+      <ul class="dropdown-menu" role="menu" aria-labelledby="colorDropdown{{index}}">
+      {{#each mastermindColors}}
+        <li role="presentation" value="{{color}}">
+          <a role="menuitem" tabindex="-1" href="#">
+            {{> peg}}
+          </a>
+        </li>
+      {{/each}}
+      </ul >
+      <!-- </select> -->
+    </div>
+  {{/each}}
 </center>
 </template>
 
 
 <template name="guess">
-  <tr>
-    {{#each pegs}}
-      <td>
-        <svg width="50" height="50">
-          <rect width="50" height="50" fill="{{color}}" />
-        </svg>
-      </td>
-    {{/each}}
+<tr>
+  {{#each pegs}}
     <td>
-      {{bulls}} Bulls <br/> {{cows}} Cows
+      {{> peg}}
     </td>
-  </tr>
+  {{/each}}
+  <td>
+    {{bulls}} Bulls <br/> {{cows}} Cows
+  </td>
+</tr>
+</template>
+
+<template name="peg">
+<svg width="50" height="50">
+  <rect width="50" height="50" fill="{{color}}" />
+</svg>
 </template>
