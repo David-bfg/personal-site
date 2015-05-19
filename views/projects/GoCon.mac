@@ -7,8 +7,8 @@
 	BIT	MASK(R5),BSI(R4);check bit representing input
 	BNE	WHERE		;branch if bit is 1
 	.ENDM			;
-START:	MOV	I,R0		;copy I to reg. 
-	CMP	#4,R0		;first case when I = four 
+START:	MOV	I,R0		;copy I to reg.
+	CMP	#4,R0		;first case when I = four
 	BNE	TWS		;branchif not case
 	MOV	TWO,PRIME1	;copy 2 to output
 	MOV	TWO,PRIME2	;"	"	"
@@ -48,7 +48,7 @@ OUTER:	INC	R2		;incremented by 2
 	BSTST	SKIP		;CASE IS NOT PRIME
 	MOV	R2,R3		;copy to reg3
 	MUL	R3,R3		;square reg3
-FACTOR:	MOV	R3,R5		;copy to reg5 
+FACTOR:	MOV	R3,R5		;copy to reg5
 	CLR	R4		;clear for devide
 	DIV	MASK+20.,R4	;div by 32
 	ASL	R4		;double reg4 for array

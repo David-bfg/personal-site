@@ -1,0 +1,119 @@
+<template name="assemblyproject">
+<p>
+  A college project of mine where I had writen a validator for goldbach's
+  conjecture in assembly language. To do this you would have to calculate
+  primes. All my clasmates had done a naive calculation for checking primes. I
+  was intent on writing an algorithm with optimized memory and comutational
+  efficiency. To do this I wrote the Sieve of Eratosthenes algorithm in
+  assembly. My professor said I went above and beyond the requirements of the
+  assignment. Note: this code was written in the PDP-11 assembly language.
+</p>
+{{#markdown}}
+```
+;23456789012345678901234567890123
+        .MACRO  BSTST,WHERE     ;
+        CLR     R4              ;clear reg4
+        DIV     MASK+20.,R4     ;divideby 32.
+        ASL     R4              ;double the val.
+        DEC     R5              ;decrement to even val.
+        BIT     MASK(R5),BSI(R4);check bit representing input
+        BNE     WHERE           ;branch if bit is 1
+        .ENDM                   ;
+START:  MOV     I,R0            ;copy I to reg.
+        CMP     #4,R0           ;first case when I = four
+        BNE     TWS             ;branchif not case
+        MOV     TWO,PRIME1      ;copy 2 to output
+        MOV     TWO,PRIME2      ;"      "       ""
+        JMP     END             ;finish case
+OUT:    JMP     ERR             ;error case
+TWS:    ASR     R0              ;shift/analasys
+        BCS     OUT             ;branch if I=odd cause error
+        CMP     R0,TWO          ;check if reg0=1
+        BMI     OUT             ;branch if I<4 case
+        ASL     R0              ;undo shift/analasys
+        CLR     R1              ;clear reg1
+        INC     R1              ;increment to odd val.
+SQ:     INC     R1              ;"      "       ""
+        INC     R1              ;"      "       ""
+        MOV     R1,R3           ;copy to temp reg3
+        MUL     R3,R3           ;square reg3
+        BVS     OVER            ;if overflow case skip
+        CMP     R3,R0           ;comparison to max value
+        BMI     SQ              ;pass branch if (reg1^2)>I
+OVER:   DEC     R1              ;subtract 2 from the sqroot for
+        DEC     R1              ;the value to be the floor
+        MOV     R0,R3           ;copy max value to reg3
+        CLR     R2              ;clear reg2
+        DIV     MASK+20.,R2     ;divide by 32 gives #words used
+        ASL     R2              ;double value for array
+        INC     R2              ;add 2 for sob branch
+        INC     R2              ;"      "       ""
+cLEAR:  CLR     BSI-2(R2)       ;clear boolean sieve (BSI)
+        DEC     R2              ;decremen counter
+        SOB     R2,CLEAR        ;loop through array
+        ASR     R1              ;squareRoot of I divided by 2
+        CLR     R2              ;clear reg2 for a counter
+        INC     R2              ;reg2 is odd value
+OUTER:  INC     R2              ;incremented by 2
+        INC     R2              ;"      "       ""
+        MOV     R2,R5           ;macro uses reg 5
+        BSTST   SKIP            ;CASE IS NOT PRIME
+        MOV     R2,R3           ;copy to reg3
+        MUL     R3,R3           ;square reg3
+FACTOR: MOV     R3,R5           ;copy to reg5
+        CLR     R4              ;clear for devide
+        DIV     MASK+20.,R4     ;div by 32
+        ASL     R4              ;double reg4 for array
+        DEC     R5              ;decrement for array even
+        BIS     MASK(R5),BSI(R4);set boolean sieve
+        ADD     R2,R3           ;add factor twice
+        ADD     R2,R3           ;"      "       ""
+        BMI     SKIP            ;overflow case
+        CMP     R3,R0           ;compare to limit
+        BMI     FACTOR          ;move out of loop if positive
+SKIP:   SOB     R1,OUTER        ;loop till reg1=0
+        MOV     R0,R1           ;copy I(reg0) value
+        DEC     R0              ;decrement to odd val.
+LOOP:   DEC     R0              ;"      "       ""
+        DEC     R0              ;"      "       ""
+        MOV     R0,R5           ;"      "       ""
+        BSTST   LOOP            ;check if high val. prime
+        MOV     R1,R2           ;copy
+        SUB     R0,R2           ;find low val.
+        MOV     R2,R5           ;check if low val. prime
+        BSTST   LOOP            ;CHECK LOW
+        MOV     R0,PRIME1       ;MOVES VALUES
+        MOV     R2,PRIME2       ;"      "
+        BR      END             ;skip error case
+ERR:    MOV     mask,PRIME1     ;set error values
+        MOV     PRIME1,PRIME2   ;"      "       ""
+END:    HALT                    ;
+TWO:    .WORD   2               ;constant for out if I=4
+MASK:   .WORD   100000          ;array of masks
+        .WORD   40000           ;
+        .WORD   20000           ;
+        .WORD   10000           ;
+        .WORD   4000            ;
+        .WORD   2000            ;
+        .WORD   1000            ;
+        .WORD   400             ;
+        .WORD   200             ;
+        .WORD   100             ;
+        .WORD   40              ;
+        .WORD   20              ;
+        .WORD   10              ;
+        .WORD   4               ;
+        .WORD   2               ;
+        .WORD   1               ;
+BSI:    .BLKW   2001            ;Boolean sieve
+;                               rep odd val 1 through 32767
+;       data
+;
+;
+I:      .BLKW   1               ;IN  -2's compl >2 '
+PRIME1: .BLKW   1               ;OUT -2's compl 2 primes or -32768 error msg '
+PRIME2: .BLKW   1               ;
+        .END
+```
+{{/markdown}}
+</template>

@@ -78,6 +78,8 @@ Template.projects.helpers({
         return Template.elevatorsaga;
       case "mastermind":
         return Template.mastermind;
+      case "assemblyproject":
+        return Template.assemblyproject;
       default:
         return Template.projecthome;
     }
