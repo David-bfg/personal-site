@@ -103,28 +103,39 @@ Template.mastermind.helpers({
     var guess = Session.get("mastermindGuess");
     return[
       {color: guess[0], index: 0}, {color: guess[1], index: 1},
-      {color: guess[2], index: 2}, {color: guess[3], index: 3}]
+      {color: guess[2], index: 2}, {color: guess[3], index: 3}];
   }
 });
 
-var bulls = function (guess, solution) {
+var bulls = function (guess, cmp) {
   var bulls = 0;
   for(var x = 0; x < 4; x++){
-    if(guess[x] == solution[x]){bulls++;}
+    if(guess[x] == cmp[x]){bulls++;}
   }
   return bulls;
 };
 
-var bullsPlusCows = function (guess, solution) {
+var bullsPlusCows = function (guess, cmp) {
   var bullsPlusCows = 0;
   for(var x = 0; x < 4; x++){
-    var index = solution.indexOf(guess[x]);
+    var index = cmp.indexOf(guess[x]);
     if(-1 != index){
       bullsPlusCows++;
-      solution.splice(index, 1);
+      cmp.splice(index, 1);
     }
   }
   return bullsPlusCows;
+};
+
+var shiftGuess = function (guess, up) {
+  for(var x = 0; x < 4; x++){
+    var shift = guess[x] + (up ? 1 : -1);
+    if((up ? colors.length : -1) != shift){
+      guess[x] = shift;
+      return;
+    }
+    guess[x] = up ? 0 : colors.length - 1;
+  }
 };
 
 Template.mastermind.events({
@@ -150,6 +161,46 @@ Template.mastermind.events({
     dbGuess.bulls = bulls(guess, solution);
     dbGuess.cows = bullsPlusCows(guess, solution) - dbGuess.bulls;
     MastermindGuesses.insert(dbGuess);
+  },
+  "click .shift": function (event) {
+    var guesses = MastermindGuesses.find({}).fetch();
+    var intGuesses = [];
+    var guess = Session.get("mastermindGuess");
+    var i = 0;
+    var badGuess = true;
+    guess= [colors.indexOf(guess[0]), colors.indexOf(guess[1]),
+        colors.indexOf(guess[2]), colors.indexOf(guess[3])];
+
+    if(0 != guesses.length){
+      for(var x = 0; x < guesses.length; x++){
+        intGuesses.push([
+            colors.indexOf(guesses[x].pegs[0].color),
+            colors.indexOf(guesses[x].pegs[1].color),
+            colors.indexOf(guesses[x].pegs[2].color),
+            colors.indexOf(guesses[x].pegs[3].color)]);
+      }
+
+      while(badGuess && i < 8*8*8*8){
+        i++; // prevents infinite loop
+        shiftGuess(guess, {"up": true, "down": false}[$(event.currentTarget)
+            .attr("value")]);
+
+        for(var x = 0; badGuess && x < guesses.length; x++){
+          var cmp = intGuesses[x].slice();
+          badGuess = guesses[x].bulls == bulls(guess, cmp) && guesses[x].cows
+              == (bullsPlusCows(guess, cmp) - guesses[x].bulls);
+        }
+
+        badGuess = !badGuess;
+      }
+    }else{
+      shiftGuess(guess, {"up": true, "down": false}[$(event.currentTarget)
+          .attr("value")]);
+    }
+
+    guess= [colors[guess[0]], colors[guess[1]], colors[guess[2]],
+        colors[guess[3]]];
+    Session.set("mastermindGuess", guess);
   },
   "click #new-game": function (event) {
     Meteor.call("clearMastermind");

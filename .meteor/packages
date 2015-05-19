@@ -10,3 +10,5 @@ insecure
 jquery
 iron:router
 twbs:bootstrap
+simple:highlight.js
+markdown
