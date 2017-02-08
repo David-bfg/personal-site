@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Elevator Saga - the elevator programming game</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="font-awesome-4.1-1.0/css/font-awesome.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="style.css" type="text/css" media="all">
+
+    <script type="text/javascript" src="libs/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="libs/lodash.min.js"></script>
+    <script type="text/javascript" src="libs/riot.js"></script>
+
+    <script type="text/javascript" src="libs/unobservable.js"></script>
+
+    <script type="text/javascript" src="base.min.js"></script>
+    <script type="text/javascript" src="movable.min.js"></script>
+    <script type="text/javascript" src="floor.min.js"></script>
+    <script type="text/javascript" src="user.min.js"></script>
+    <script type="text/javascript" src="elevator.min.js"></script>
+    <script type="text/javascript" src="interfaces.min.js"></script>
+    <script type="text/javascript" src="world.min.js"></script>
+    <script type="text/javascript" src="presenters.min.js"></script>
+    <script type="text/javascript" src="challenges.min.js"></script>
+    <script type="text/javascript" src="fitness.min.js"></script>
+    <script type="text/javascript" src="app.min.js"></script>
+
+
+    <script type="text/template" id="user-template">
+        <i class="movable fa user fa-{u.displayType} {state}"></i>
+    </script>
+
+    <script type="text/template" id="floor-template">
+        <div class="floor" style="top: {yPosition}px">
+            <span class="floornumber">{level}</span>
+            <span class="buttonindicator">
+                <i class="fa fa-arrow-circle-up up"></i>
+                <i class="fa fa-arrow-circle-down down"></i>
+            </span>
+        </div>
+    </script>
+
+    <script type="text/template" id="elevator-template">
+        <div class="elevator movable" style="width: {e.width}px">
+            <span class="directionindicator directionindicatorup"><i class="fa fa-arrow-circle-up up activated"></i></span>
+            <span class="floorindicator"><span></span></span>
+            <span class="directionindicator directionindicatordown"><i class="fa fa-arrow-circle-down down activated"></i></span>
+            <span class="buttonindicator"></span>
+        </div>
+    </script>
+
+    <script type="text/template" id="elevatorbutton-template">
+        <span class="buttonpress">{floorNum}</span>
+    </script>
+
+    <script type="text/template" id="feedback-template">
+        <div class="feedback">
+            <h2 class="emphasis-color">{title}</h2>
+            <p class="emphasis-color">{message}</p>
+            <a href="{url}" class="emphasis-color">Next challenge <i class="fa fa-caret-right blink" style="text-decoration: blink"></i></a>
+        </div>
+    </script>
+
+    <script type="text/template" id="challenge-template">
+        <button class="left startstop unselectable" style="width: 110px">{startButtonText}</button>
+        <h3 class="left">
+            <i class="fa fa-minus-square timescale_decrease unselectable"></i>
+            <span class="emphasis-color" style="display: inline-block; width: 22px; text-align: center">{timeScale}</span>
+            <i class="fa fa-plus-square timescale_increase unselectable"></i>
+        </h3>
+        <div class="left">
+            <h3>{challenge.condition.description}</h3>
+        </div>
+    </script>
+
+    <script type="text/template" id="codestatus-template">
+        <h5 class="error" style="display: {errorDisplay}"><i class="fa fa-warning error-color"></i> There is a problem with your code: {errorMessage}</h5>
+    </script>
+
+</head>
+<body>
+    <div class="container">
+        <noscript>
+            <h2>Your browser does not appear to support JavaScript. This page contains a browser-based programming game implemented in JavaScript.</h2>
+        </noscript>
+
+        <div class="challenge" style="height: 40px">
+        </div>
+
+        <div class="world">
+            <div class="feedbackcontainer"></div>
+            <div class="innerworld">
+            </div>
+            <div class="statscontainer">
+                <div style="top: 20px"><span class="key">Transported</span><span class="value transportedcounter"></span></div>
+                <div style="top: 40px"><span class="key">Elapsed time</span><span class="value elapsedtime"></span></div>
+                <div style="top: 60px"><span class="key">Transported/s</span><span class="value transportedpersec"></span></div>
+                <div style="top: 80px"><span class="key">Avg waiting time</span><span class="value avgwaittime"></span></div>
+                <div style="top: 100px"><span class="key">Max waiting time</span><span class="value maxwaittime"></span></div>
+                <div style="top: 120px"><span class="key" title="Number of floors that have been travelled by elevators">Moves</span><span class="value movecount"></span></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
