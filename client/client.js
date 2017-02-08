@@ -54,10 +54,14 @@ Template.selectproject.events({
 Template.selectproject.helpers({
   mastermindThumbnail: function () {
     var thumbnail = [
-      {pegs:[{color: "yellow"}, {color: "green"}, {color: "red"}, {color: "blue"}]},
-      {pegs:[{color: "green"}, {color: "yellow"}, {color: "blue"}, {color: "blue"}]},
-      {pegs:[{color: "red"}, {color: "blue"}, {color: "red"}, {color: "yellow"}]},
-      {pegs:[{color: "green"}, {color: "blue"}, {color: "green"}, {color: "yellow"}]}
+      {pegs:[
+        {color: "yellow"}, {color: "green"}, {color: "red"}, {color: "blue"}]},
+      {pegs:[
+        {color: "green"}, {color: "yellow"}, {color: "blue"}, {color: "blue"}]},
+      {pegs:[
+        {color: "red"}, {color: "blue"}, {color: "red"}, {color: "yellow"}]},
+      {pegs:[
+        {color: "green"}, {color: "blue"}, {color: "green"}, {color: "yellow"}]}
     ];
 
     for(var y =0; y <4; y++){
@@ -98,8 +102,9 @@ Template.mastermind.helpers({
     return MastermindGuesses.find({bulls: 4}).count();
   },
   mastermindColors: [
-    {color: colors[0]}, {color: colors[1]}, {color: colors[2]}, {color: colors[3]},
-    {color: colors[4]}, {color: colors[5]}, {color: colors[6]}, {color: colors[7]}
+    {color: colors[0]}, {color: colors[1]}, {color: colors[2]},
+    {color: colors[3]}, {color: colors[4]}, {color: colors[5]},
+    {color: colors[6]}, {color: colors[7]}
   ],
   mastermindCurrentGuess: function () {
     var guess = Session.get("mastermindGuess");
@@ -170,7 +175,7 @@ Template.mastermind.events({
     var guess = Session.get("mastermindGuess");
     var i = 0;
     var badGuess = true;
-    guess= [colors.indexOf(guess[0]), colors.indexOf(guess[1]),
+    guess = [colors.indexOf(guess[0]), colors.indexOf(guess[1]),
         colors.indexOf(guess[2]), colors.indexOf(guess[3])];
 
     if(0 != guesses.length){
@@ -200,7 +205,7 @@ Template.mastermind.events({
           .attr("value")]);
     }
 
-    guess= [colors[guess[0]], colors[guess[1]], colors[guess[2]],
+    guess = [colors[guess[0]], colors[guess[1]], colors[guess[2]],
         colors[guess[3]]];
     Session.set("mastermindGuess", guess);
   },
