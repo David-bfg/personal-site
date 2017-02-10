@@ -84,6 +84,8 @@ Template.projects.helpers({
         return Template.mastermind;
       case "assemblyproject":
         return Template.assemblyproject;
+      case "opengl":
+        return Template.opengl;
       default:
         return Template.projecthome;
     }
