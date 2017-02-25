@@ -1,0 +1,45 @@
+<template name="enhancedcartoon">
+<p>
+  This project started with an openCV+openCL cartoon sample that I improved by
+  utilizing a kinect depth sensor to improve outlines of drawn images. you can
+  check out the code
+  <a href="https://github.com/David-bfg/Freenect-sample">here on github</a>.
+</p>
+<p>
+  This is a combination of 3 libraries I have interest in and wanted to explore
+  more. Those tools being openCV, openCL and freenect.
+</p>
+<center>
+  <img src="cartoon.jpg" alt="cartoon example pic" />
+</center>
+<p>
+  I started with the AMD APPSDK sample for CartoonFilter that does two things. It
+  finds the edges in an image and softens the colors using meanShiftFiltering to
+  look cartoonish. The edge detection only looks at color changes so many edges
+  are not spacial/real edges. So the default functionality draws many
+  non-existent lines to delineate edges in an image.
+</p>
+<center>
+  <img src="outline.jpg" alt="kinect sensor edges" />
+</center>
+<p>
+  To correct the edges we can use freenect to access depth information. Applying
+  the edge
+  detection algorithm on the depth information we can find where the actual object edges
+  are. (See image above.) Then we compare the actual edges and where the cartoon program thinks
+  there are edges plus or minus a few pixels (depth and color cameras don't overlap perfectly).
+  We will keep all edges close to actual edges found with the depth sensor.
+</p>
+<div class="alert alert-info">
+  <strong>Note:</strong> depth sensor does not line up with the camera sensor perfectly so the camera edges are preferred because they are in the right position but we compare with the depth sensor so we are outlining the right objects.
+</div>
+<center>
+  <img src="example.jpg" alt="close up" width="50%" />
+</center>
+<p>
+  Above is a good example of where there are several strong color shifts in the sweater I am wearing. Since the real edge is known the outline is only at the top of my shoulder and not placed in the middle of the shirt.
+</p>
+<center>
+  <img src="cartoon.jpg" alt="cartoon example pic" />
+</center>
+</template>

@@ -86,6 +86,8 @@ Template.projects.helpers({
         return Template.assemblyproject;
       case "opengl":
         return Template.opengl;
+      case "enhancedcartoon":
+        return Template.enhancedcartoon;
       default:
         return Template.projecthome;
     }
